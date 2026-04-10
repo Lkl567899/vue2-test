@@ -1,15 +1,10 @@
 <template>
-  <div class="public-navbar">
+  <div class="public-navbar" :class="{ show: scrollTop >= 100 }">
     <img src="@/assets/cy.png" alt="" class="cyImg" />
     <div class="body">
       <div class="body-left">
-        <div
-          class="item"
-          v-for="(item, index) in items"
-          :key="item.id"
-          :class="{ active: index === activeIndex }"
-          @click="activeIndex = index"
-        >
+        <div class="item" v-for="(item, index) in items" :key="item.id" :class="{ active: index === activeIndex }"
+          @click="go(item, index)">
           {{ item.name }}
         </div>
       </div>
@@ -29,25 +24,50 @@
 </template>
 
 <script>
+import { mapMutations, mapState } from 'vuex';
+
 export default {
   data() {
     return {
-      activeIndex: 0,
       items: [
-        { name: "首页", id: 1 },
-        { name: "4K专区", id: 2 },
+        { name: "首页", id: 1, path: "/home" },
+        { name: "4K专区", id: 2, path: "/xxx" },
         { name: "剧场番剧", id: 3 },
         { name: "TV番组", id: 4 },
         { name: "更多", id: 5 },
       ],
+      scrollTop: 0
     };
   },
+  mounted() {
+    window.addEventListener('scroll', this.handleScroll)
+  },
+  beforeDestroy() {
+    window.removeEventListener('scroll', this.handleScroll)
+  },
+  methods: {
+    ...mapMutations('navbar', ['SET_ACTIVE_INDEX']),
+    handleScroll() {
+      this.scrollTop = window.pageYOffset
+    },
+    go(item, index) {
+      this.SET_ACTIVE_INDEX(index)
+      if (item.path) {
+        this.$router.replace(item.path);
+      }
+    },
+  },
+  computed: {
+    ...mapState({
+      activeIndex: state => state.navbar.activeIndex
+    })
+  }
 };
 </script>
 
 <style lang="scss" scoped>
 .public-navbar {
-  position: absolute;
+  position: fixed;
   left: 0;
   top: 0;
   z-index: 1000;
@@ -56,26 +76,33 @@ export default {
   background: rgba(16, 16, 16, 0.1);
   display: flex;
   align-items: center;
+  transition: background-color 0.3s ease;
+
   .cyImg {
     width: 200px;
   }
+
   .body {
     display: flex;
     justify-content: space-between;
     flex: 1;
+
     .body-left {
       display: flex;
       padding-left: 25px;
+
       .item {
         display: flex;
         padding-right: 25px;
         font-weight: 600;
         cursor: pointer;
       }
+
       .item.active {
         color: #ed5d64;
       }
     }
+
     .body-right {
       .bodyImg {
         padding-right: 20px;
@@ -83,9 +110,11 @@ export default {
       }
     }
   }
+
   .edit {
     display: flex;
     align-items: center;
+
     .user {
       width: 40px;
       height: 40px;
@@ -96,10 +125,12 @@ export default {
       justify-content: center;
       margin-right: 20px;
     }
+
     .userImg {
       background-color: #ed5d64;
       cursor: pointer;
     }
+
     .userBack {
       padding: 0 20px;
       height: 40px;
@@ -111,5 +142,9 @@ export default {
       cursor: pointer;
     }
   }
+}
+
+.show {
+  background-color: #161616;
 }
 </style>
