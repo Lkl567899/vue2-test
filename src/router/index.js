@@ -9,7 +9,7 @@ const routes = [
     path: '/',
 
     name: 'Public',
-    redirect: '/200',
+    redirect: '/heart',
     component: Public,
     children: [{
       path: '/home',
@@ -26,6 +26,11 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/layout/200/index')
+  },
+  {
+    path: '/heart',
+    name: 'heart',
+    component: () => import('../views/layout/heart/index')
   }
 ]
 
