@@ -26,7 +26,7 @@ export default {
 
     .h1 {
         margin-top: 20px;
-        font-family: 'Comic Neue', cursive;
+        font-family: 'Comic Neue', 'Segoe UI', 'Helvetica', 'Arial', sans-serif;
         /* 可爱手写风 */
         color: #333;
         /* 可根据背景调色 */
